@@ -32,15 +32,22 @@ define([
 
 		// initialization
 		initialize: function() {
+
+			console.log("initializing track model");
 			_.bindAll(this, 'initClip', 'remove', 'resetDuplicates');
 			this.bind('remove', this.remove);
 			this.bind('change:name', this.resetDuplicates);
 			this.clips = new ClipsC;
 			this.initClip();
+
+			console.log("sample file is being initialized");
 			Audiee.Player.initTrack(this.cid);
 		},
 
+		//i think clip stands for canvas drawings
 		initClip: function() {
+
+			console.log("initializing track clip model");
 			var clip = new ClipM({
 				name: this.get('file').name,
 				endTime: this.get('buffer').duration,

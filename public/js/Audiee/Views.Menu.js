@@ -121,6 +121,8 @@ define([
                 Audiee.Collections.Tracks.remove($track.data('cid'));
         },
         
+        //this event triggers _fileLoaded but delegates upload functionality to 
+        //Audiee.Player.loadFile function
         _fileSelected: function(e) {
             try {
                 // try to load the selected audio file
@@ -139,11 +141,14 @@ define([
         },
 
         _fileLoaded: function(e, audioBuffer, file) {
+            console.log("new audio file loaded");
             e.stopPropagation();
             // hide the new track modal if it's still shown
             $('#newTrackModal').modal('hide');
             
             // create new Track model and add it to the Tracks collection
+            // 
+            //initialization of model enables sample files init on player
             var name = 'Track ' + Audiee.Collections.Tracks.getIndexCount();
                 track = new TrackM({buffer: audioBuffer, file: file, name: name});
             Audiee.Collections.Tracks.add(track);

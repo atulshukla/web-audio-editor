@@ -63,7 +63,7 @@ define([
             if (this.playing)
                 this.stop();
 
-            // constructs the audio tree
+            // constructs the audio treex
             Audiee.Collections.Tracks.each(function(track) {
                 var cid = track.cid,
                     gainNode = that.gainNodes[cid];
@@ -179,10 +179,14 @@ define([
             }
             
             reader.onloadend = function(e) {
+
+                console.log("file readed by FileReader");
+
                 if (e.target.readyState == FileReader.DONE) { // DONE == 2
                     $('.progress').children().width('100%');
                     
                     var onsuccess = function(audioBuffer) {
+                        console.log("AudioBuffer successfully decoded");
                         $(el).trigger('Audiee:fileLoaded', [audioBuffer, file]);    
                     },
                     onerror = function() {
