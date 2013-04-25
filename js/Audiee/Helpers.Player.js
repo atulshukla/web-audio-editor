@@ -27,10 +27,16 @@ define([
                 $(tpl).modal();   
             } else {
                 this.context = new webkitAudioContext || new AudioContext;
+
+                //initialize tuna
+                this.tuna = new Tuna(this.context);
             }
             
             this.nodes     = [];
             this.gainNodes = {};
+
+            this.delayNodes = {};
+
             this.playing   = false;
             this.playbackFrom;
             this.playbackPositionInterval;
@@ -39,7 +45,21 @@ define([
         Player.prototype.initTrack = function(cid) {
             if (typeof this.gainNodes[cid] === 'undefined') {
                 this.gainNodes[cid] = this.context.createGainNode();
-                this.gainNodes[cid].connect(this.context.destination);
+                
+            }
+
+            //create tuna delayNodes
+            if (typeof this.delayNodes[cid] === 'undefined') {
+                this.delayNodes[cid] = new this.tuna.Delay({
+                            feedback: 1,    //0 to 1+
+                            delayTime: 350,    //how many milliseconds should the wet signal be delayed? 
+                            wetLevel: 0.25,    //0 to 1+
+                            dryLevel: 0.5,       //0 to 1+
+                            cutoff: 20,        //cutoff frequency of the built in highpass-filter. 20 to 22050
+                            bypass: 0
+                        });
+                this.gainNodes[cid].connect(this.delayNodes[cid].input);
+                this.delayNodes[cid].connect(this.context.destination);
             }
         };
 
@@ -94,6 +114,8 @@ define([
 
                     for (var i = 0; i <= loop; ++i) {
                         node = that.context.createBufferSource();
+                        //bind tuna effect
+
                         that.nodes.push(node);
                         node.buffer = clip.get('buffer');
                         node.connect(gainNode);  // connects node to track's gain node
