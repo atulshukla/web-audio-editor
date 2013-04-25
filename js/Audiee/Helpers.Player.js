@@ -45,21 +45,36 @@ define([
         Player.prototype.initTrack = function(cid) {
             if (typeof this.gainNodes[cid] === 'undefined') {
                 this.gainNodes[cid] = this.context.createGainNode();
-                
+                this.gainNodes[cid].connect(this.context.destination);
             }
 
             //create tuna delayNodes
+            // if (typeof this.delayNodes[cid] === 'undefined') {
+            //     this.delayNodes[cid] = new this.tuna.Delay({
+            //                 feedback: 1,    //0 to 1+
+            //                 delayTime: 350,    //how many milliseconds should the wet signal be delayed? 
+            //                 wetLevel: 0.25,    //0 to 1+
+            //                 dryLevel: 0.5,       //0 to 1+
+            //                 cutoff: 20,        //cutoff frequency of the built in highpass-filter. 20 to 22050
+            //                 bypass: 0
+            //             });
+            //     this.gainNodes[cid].connect(this.delayNodes[cid].input);
+            //     this.delayNodes[cid].connect(this.context.destination);
+            // }
+
             if (typeof this.delayNodes[cid] === 'undefined') {
-                this.delayNodes[cid] = new this.tuna.Delay({
-                            feedback: 1,    //0 to 1+
-                            delayTime: 350,    //how many milliseconds should the wet signal be delayed? 
-                            wetLevel: 0.25,    //0 to 1+
-                            dryLevel: 0.5,       //0 to 1+
-                            cutoff: 20,        //cutoff frequency of the built in highpass-filter. 20 to 22050
-                            bypass: 0
-                        });
-                this.gainNodes[cid].connect(this.delayNodes[cid].input);
+
+                var now = this.context.currentTime;
+                this.delayNodes[cid] = this.context.createDelayNode();
+                this.delayNodes[cid].delayTime.setValueAtTime(0.0,now);
+                this.delayNodes[cid].delayTime.linearRampToValueAtTime( 1, now + 4 );
+
+                //this.delayNodes[cid].delayTime.value = 0.1;
+
+                this.gainNodes[cid].connect(this.delayNodes[cid]);
                 this.delayNodes[cid].connect(this.context.destination);
+                // this.gainNodes[cid].connect(this.delayNodes[cid].input);
+                // this.delayNodes[cid].connect(this.context.destination);
             }
         };
 
