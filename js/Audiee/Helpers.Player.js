@@ -183,6 +183,9 @@ define([
                     $('.progress').children().width('100%');
                     
                     var onsuccess = function(audioBuffer) {
+
+                        console.log("track audio buffer created successfully and now on decodeAudioData");
+                        //triggers Views.Menu back
                         $(el).trigger('Audiee:fileLoaded', [audioBuffer, file]);    
                     },
                     onerror = function() {

@@ -11,6 +11,8 @@
  */
 
 define(function(require) {
+
+	console.log("ew la ");
 	// general
 	var $ = require('jquery'),
 		_ = require('underscore'),

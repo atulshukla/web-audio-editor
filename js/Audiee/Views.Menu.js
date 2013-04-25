@@ -52,6 +52,9 @@ define([
             _.bindAll(this, 'render', '_fileSelected', '_fileLoaded', 'handleKey');
             $(document).on('keyup', this.handleKey);
             this.enableHotkeys();
+
+            //when file uploaded successfully
+            
             this.el.bind('Audiee:fileLoaded', this._fileLoaded);
             this.render();
         },
@@ -121,9 +124,13 @@ define([
                 Audiee.Collections.Tracks.remove($track.data('cid'));
         },
         
+        //this function triggers _fileLoaded but delegating upload job to Audiee.Player
         _fileSelected: function(e) {
             try {
+
                 // try to load the selected audio file
+                // Audiee.Player.loadFile function triggers _fileLoaded event of this view's el
+                
                 Audiee.Player.loadFile(e.target.files[0], this.el);
             } catch (e) {
                 // on error - show alert modal
@@ -138,7 +145,11 @@ define([
             }
         },
 
+        //after file succesfully loaded create new model and add it to Tracks collection
+        //View.Tracks view listens for add event of this collection
         _fileLoaded: function(e, audioBuffer, file) {
+
+            console.log("file uploaded succesfully");
             e.stopPropagation();
             // hide the new track modal if it's still shown
             $('#newTrackModal').modal('hide');
@@ -147,6 +158,7 @@ define([
             var name = 'Track ' + Audiee.Collections.Tracks.getIndexCount();
                 track = new TrackM({buffer: audioBuffer, file: file, name: name});
             Audiee.Collections.Tracks.add(track);
+
         },
 
         zoomIn: function() {
