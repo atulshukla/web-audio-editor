@@ -19,6 +19,7 @@ define(function(require) {
 	// helpers
 		PlayerH = require('Audiee/Helpers.Player'),
 		DisplayH = require('Audiee/Helpers.Display'),
+		UploaderH = require('Audiee/Helpers.S3Uploader'),
 
 	// models
 		ProjectM = require('Audiee/Models.Project'),
@@ -49,6 +50,7 @@ define(function(require) {
 	};
 	Audiee.Display = new DisplayH;
 	Audiee.Player = new PlayerH;
+	Audiee.Uploader = new UploaderH;
 
 	// application initialization
 	var init = function() {

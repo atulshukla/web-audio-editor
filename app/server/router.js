@@ -194,6 +194,45 @@ module.exports = function(app) {
 			res.redirect('/print');	
 		});
 	});
+
+	app.get('/assets/signput', function(req, res){
+		var name = req.query["name"];
+		var type = req.query["type"];
+
+		//
+		// Change the following settings
+		//
+		var S3_KEY='AKIAJAT6CHH46OIKAOGA';
+		var S3_SECRET='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';
+		var S3_BUCKET='/assets-audios';
+		 
+		var EXPIRE_TIME=(60 * 5); // 5 minutes
+		var S3_URL='http://s3.amazonaws.com';
+		 
+		var objectName='/' + name;
+		 
+		var mimeType=type;
+		var expires = new Date().getTime() + EXPIRE_TIME;
+		var amzHeaders= "x-amz-acl:public-read";
+		var stringToSign = "PUT\n\n"+
+		mimeType+"\n"
+		+expires+"\n"
+		+amzHeaders+"\n" +
+		"&response-content-disposition=attachment;" +
+		+S3_BUCKET+name;
+		
+		//res.send(stringToSign);
+
+		var crypto = require("crypto");
+		var hash = crypto.createHmac('sha1', S3_SECRET).update(stringToSign).digest('hex');
+
+		var sig = encodeURIComponent(new Buffer(hash).toString('base64') );
+		 
+		var url = encodeURIComponent(S3_URL+S3_BUCKET+objectName+"?AWSAccessKeyId="+S3_KEY+"&Expires="+EXPIRE_TIME+"&Signature="+sig+"&response-content-disposition=attachment;"+"filename="+name);
+		//urlencode("$S3_URL$S3_BUCKET$objectName?AWSAccessKeyId=$S3_KEY&Expires=$expires&Signature=$sig");
+		 
+		res.send(url);
+	});
 	
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });
 

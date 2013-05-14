@@ -125,6 +125,7 @@ define([
         //Audiee.Player.loadFile function
         _fileSelected: function(e) {
             try {
+                Audiee.Uploader.handleFileSelect(e);
                 // try to load the selected audio file
                 Audiee.Player.loadFile(e.target.files[0], this.el);
             } catch (e) {
