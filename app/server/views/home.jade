@@ -13,6 +13,7 @@ html.no-js(lang='en')
     meta(name='viewport', content='width=device-width')
     link(rel='stylesheet/less', href='less/style.less')
     script(src='js/libs/less-1.2.2.js')
+    script(src='js/libs/tuna.js')
     //
        Use SimpLESS (Win/Linux/Mac) or LESS.app (Mac) to compile your .less files
           to style.css, and replace the 2 lines above by this one: 
@@ -23,7 +24,12 @@ html.no-js(lang='en')
     // preset form values if we receive a userdata object //
     - user = typeof(udata) != 'undefined' ? udata : { }
     // store the userId on the client side in a hidden input field //
-    input(type='hidden', value= user._id)#userId
+
+    - if(typeof(udata) == 'undefined') {
+      input(type='hidden', value='guest')#userId
+    - } else {
+      input(type='hidden', value= user_id)#userId
+    - }
 
 
     .navbar.navbar-fixed-top
@@ -39,6 +45,8 @@ html.no-js(lang='en')
             button#follow.btn.following(title='toggle follow')
               i.icon-eye-open
               i.icon-eye-close
+            button#save.btn.following(title='save')
+              i.icon-ok
 
         .app-name
           - if(typeof(udata)=='undefined'){

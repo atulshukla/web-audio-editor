@@ -27,6 +27,8 @@ define([
                 $(tpl).modal();   
             } else {
                 this.context = new webkitAudioContext || new AudioContext;
+                //initialize Tuna
+                this.tuna = new Tuna(this.context);
             }
             
             this.nodes     = [];
